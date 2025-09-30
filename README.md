@@ -13,6 +13,12 @@
 - ***prueba-tecnica-iot-frontend***: Aplicación web construida con Angular para visualizar y gestionar dispositivos IoT a través de una interfaz de usuario.
 - ***n8n***: **(Simulador de dispositivos vida real)**: Flujos de automatización en http://localhost:5678 para procesar logs, generar métricas y gestionar dispositivos específicos. Incluye workflows preconfigurados en n8n_workflows/.
 - ***PostgreSQL***: Base de datos robusta para almacenar datos de dispositivos y logs.
+- ***create_triggers.sql***: La carpeta seeds/create_trigger.sql incluye un **trigger PostgreSQL** que actualiza automáticamente el estado del dispositivo (`DEVICE_STATE`) cada vez que se insertan nuevas métricas:
+   ```sql
+   -- Trigger: update_device_state
+   -- Se ejecuta automáticamente al insertar métricas en tbl_device_metric
+   -- Sincroniza el campo 'status' de las métricas con DEVICE_STATE del dispositivo
+
 ## Requisitos previos
 - **Docker**: Asegúrate de tener Docker instalado en tu máquina. Puedes descargarlo desde [aquí](https://www.docker.com/get-started).
 - Tambien se recomienda usar Docker Desktop para una mejor experiencia.
