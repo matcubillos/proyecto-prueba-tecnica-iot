@@ -1,0 +1,72 @@
+<div class="logs-container">
+    <!-- Header -->
+    <div class="logs-header mb-4">
+      <h2 class="text-light mb-1">Logs de Conexión</h2>
+      <p class="text-muted mb-0">{{ filteredLogs.length }} registros</p>
+    </div>
+  
+    <!-- Filter Bar -->
+    <div class="filter-section mb-4">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="form-label text-light">Filtrar por dispositivo</label>
+          <select 
+            class="form-select bg-dark border-secondary text-light"
+            [(ngModel)]="selectedDeviceId"
+            (change)="onDeviceFilterChange()">
+            <option value="all">Todos los dispositivos</option>
+            <option *ngFor="let device of devices" [value]="device.DEVICE_ID">
+              {{ device.DEVICE_NAME }} ({{ device.DEVICE_TYPE }})
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Logs Table -->
+    <div class="logs-table-container">
+      <div *ngIf="!loading" class="table-responsive">
+        <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th width="10%">ID Log</th>
+              <th width="20%">Dispositivo</th>
+              <th width="20%">Fecha/Hora</th>
+              <th width="50%">Mensaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of filteredLogs" [class]="'log-row log-' + getLogLevel(log.LOG_MESSAGE)">
+              <td>{{ log.DEVICE_LOG_ID }}</td>
+              <td>
+                <strong>{{ getDeviceName(log.DEVICE_ID) }}</strong>
+                <br>
+                <small class="text-muted">ID: {{ log.DEVICE_ID }}</small>
+              </td>
+              <td>{{ log.LOG_TIMESTAMP | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+              <td>
+                <span class="log-message" [class]="'log-level-' + getLogLevel(log.LOG_MESSAGE)">
+                  {{ log.LOG_MESSAGE }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-state text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <h5 class="text-light mt-3">Cargando logs...</h5>
+      </div>
+  
+      <!-- Empty State -->
+      <div *ngIf="!loading && filteredLogs.length === 0" class="empty-state text-center py-5">
+        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+        <h4 class="text-light">No se encontraron logs</h4>
+        <p class="text-muted">No hay registros para el filtro seleccionado</p>
+      </div>
+    </div>
+  </div>

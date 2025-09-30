@@ -1,0 +1,117 @@
+.dashboard-container {
+  padding: 2rem;
+}
+
+.dashboard-header h2 {
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+
+.devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.device-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.device-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header h6 {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.metrics-preview {
+  margin: 1rem 0;
+}
+
+.metric-item {
+  padding: 0.5rem 0;
+}
+
+.metric-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+}
+
+.loading-state {
+  margin-top: 4rem;
+}
+
+.empty-state {
+  margin-top: 4rem;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Estilos para ApexCharts en tema oscuro */
+::ng-deep .apexcharts-tooltip {
+  background: #1e293b !important;
+  border: 1px solid #475569 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+::ng-deep .apexcharts-tooltip-title {
+  background: #334155 !important;
+  border-bottom: 1px solid #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+::ng-deep .apexcharts-tooltip-text {
+  color: #f1f5f9 !important;
+}
+
+::ng-deep .apexcharts-tooltip-series-group {
+  background: transparent !important;
+}
+
+/* Estilos para el toast */
+.toast-container {
+  z-index: 1055; /* Por encima de otros elementos */
+}
+
+.toast {
+  max-width: 400px;
+  border-radius: 4px;
+}
+
+.toast-header {
+  background-color: #212529 !important;
+  color: #f1f5f9 !important;
+  border-bottom: 1px solid #343a40;
+}
+
+.toast-body {
+  background-color: #212529 !important;
+  color: #f1f5f9 !important;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}

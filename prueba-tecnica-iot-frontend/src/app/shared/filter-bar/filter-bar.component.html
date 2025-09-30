@@ -1,0 +1,57 @@
+<div class="filter-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        
+        <!-- Search Input -->
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary">
+              <i class="bi bi-search text-light"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control bg-dark border-secondary text-light"
+              placeholder="Buscar dispositivos..."
+              [(ngModel)]="filters.searchTerm"
+              (input)="onFilterChange()">
+          </div>
+        </div>
+  
+        <!-- Device Type Filter -->
+        <div class="col-md-3">
+          <select 
+            class="form-select bg-dark border-secondary text-light"
+            [(ngModel)]="filters.deviceType"
+            (change)="onFilterChange()">
+            <option *ngFor="let type of deviceTypes" [value]="type.value">
+              {{ type.label }}
+            </option>
+          </select>
+        </div>
+  
+        <!-- Status Filter -->
+        <div class="col-md-3">
+          <select 
+            class="form-select bg-dark border-secondary text-light"
+            [(ngModel)]="filters.status"
+            (change)="onFilterChange()">
+            <option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+  
+        <!-- Clear Filters Button -->
+        <div class="col-md-2">
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary w-100"
+            (click)="clearFilters()">
+            <i class="bi bi-arrow-clockwise me-1"></i>
+            Limpiar
+          </button>
+        </div>
+  
+      </div>
+    </div>
+  </div>

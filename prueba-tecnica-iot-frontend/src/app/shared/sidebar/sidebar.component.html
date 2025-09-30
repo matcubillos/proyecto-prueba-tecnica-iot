@@ -1,0 +1,53 @@
+<aside class="sidebar">
+  <!-- Header -->
+  <div class="sidebar-header">
+    <h1 class="logo">IoT Dashboard</h1>
+    <span class="version">v1.0</span>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-section">
+    <h3 class="stats-title">Device Overview</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-value">{{ deviceStats.total }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-item online">
+        <span class="stat-value">{{ deviceStats.online }}</span>
+        <span class="stat-label">Online</span>
+      </div>
+      <div class="stat-item offline">
+        <span class="stat-value">{{ deviceStats.offline }}</span>
+        <span class="stat-label">Offline</span>
+      </div>
+      <div class="stat-item warning">
+        <span class="stat-value">{{ deviceStats.warning }}</span>
+        <span class="stat-label">Warning</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+    <h3 class="nav-title">Tipos de dispositivos</h3>
+    <ul class="nav-list">
+      <li *ngFor="let item of menuItems" 
+          class="nav-item"
+          [class.active]="item.active"
+          [routerLink]="item.route"
+          (click)="onMenuItemClick(item)">
+        <i [class]="'nav-icon ' + item.icon"></i>
+        <span class="nav-label">{{ item.label }}</span>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+    <div class="report-item" [routerLink]="['/connection-logs']">
+      <span class="report-icon">🔌</span>
+      <span class="report-text">Conexión en terreno</span>
+    </div>
+  </div>
+</aside>

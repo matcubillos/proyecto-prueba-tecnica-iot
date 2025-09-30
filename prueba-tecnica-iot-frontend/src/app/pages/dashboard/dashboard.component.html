@@ -1,0 +1,148 @@
+<!-- Toast para alertas -->
+<div *ngIf="alertMessage" class="toast-container position-fixed top-0 end-0 p-3">
+  <div class="toast show border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-dark text-white">
+      <strong class="me-auto">Nueva Métrica</strong>
+      <button type="button" class="btn-close btn-close-white" (click)="alertMessage = null" aria-label="Close"></button>
+    </div>
+    <div class="toast-body bg-dark text-white">
+      {{ alertMessage }}
+    </div>
+  </div>
+</div>
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header mb-4">
+    <h2 class="text-light mb-1">Dashboard IoT</h2>
+    <p class="text-muted mb-0">{{ filteredDevices.length }} de {{ devices.length }} dispositivos</p>
+  </div>
+
+  <!-- Filter Bar -->
+  <app-filter-bar 
+    [availableDeviceTypes]="getUniqueDeviceTypes()"
+    (filtersChanged)="onFiltersChanged($event)">
+  </app-filter-bar>
+
+  <!-- Devices Grid -->
+  <div *ngIf="!loading" class="devices-grid">
+    <div *ngFor="let device of filteredDevices" class="device-card">
+      <div class="card bg-dark border-secondary h-100">
+        <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-light mb-1">{{ device.DEVICE_NAME }}</h6>
+            <small class="text-muted text-uppercase">{{ device.DEVICE_TYPE }}</small>
+          </div>
+          <span class="badge" [class]="'bg-' + (device.DEVICE_STATE === 'Online' ? 'success' : device.DEVICE_STATE === 'Warning' ? 'warning' : 'danger')">
+            <i [class]="'bi ' + getStatusIcon(device.DEVICE_STATE) + ' me-1'"></i>
+            {{ device.DEVICE_STATE }}
+          </span>
+        </div>
+        
+        <div class="card-body">
+          <div class="device-info mb-3">
+            <div class="row text-center">
+              <div class="col-6">
+                <div class="metric-item">
+                  <div class="metric-value text-light">{{ device.DEVICE_ID }}</div>
+                  <div class="metric-label">ID</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="metric-item">
+                  <div class="metric-value" [class]="device.DEVICE_IS_ACTIVE ? 'text-success' : 'text-danger'">
+                    {{ device.DEVICE_IS_ACTIVE ? 'Activo' : 'Inactivo' }}
+                  </div>
+                  <div class="metric-label">Estado</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer bg-transparent border-secondary">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="bi bi-clock me-1"></i>
+              Actualizado: {{ device.UPDATED_AT | date:'short' }}
+            </small>
+            <button class="btn btn-sm btn-outline-primary" (click)="showDeviceMetrics(device)">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <h5 class="text-light mt-3">Cargando dispositivos...</h5>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredDevices.length === 0" class="empty-state text-center py-5">
+    <i class="bi bi-search display-1 text-muted mb-3"></i>
+    <h4 class="text-light">No se encontraron dispositivos</h4>
+    <p class="text-muted">Intenta cambiar los filtros de búsqueda</p>
+  </div>
+
+  <!-- Metrics Modal -->
+  <div *ngIf="showMetricsModal" class="modal fade show d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Métricas de {{ selectedDevice?.DEVICE_NAME }}</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeMetricsModal()"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Últimas Métricas -->
+          <h6 class="mb-3">Últimas Métricas</h6>
+          <table class="table table-dark table-striped">
+            <thead>
+              <tr>
+                <th>ID Métrica</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Métricas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let metric of deviceMetrics">
+                <td>{{ metric.DEVICE_METRIC_ID }}</td>
+                <td>{{ metric.METRIC_TIMESTAMP | date:'short' }}</td>
+                <td>{{ metric.METRICS.status }}</td>
+                <td>
+                  <ul class="list-unstyled mb-0">
+                    <li *ngFor="let entry of getMetricEntries(metric)">
+                      {{ entry.key }}: {{ entry.value }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Gráfico de Métricas Históricas -->
+          <h6 class="mt-4 mb-3">Histórico de {{ chartMetricLabel }}</h6>
+          <div style="position: relative; height: 300px;">
+            <apx-chart
+              [series]="chartOptions.series!"
+              [chart]="chartOptions.chart!"
+              [xaxis]="chartOptions.xaxis!"
+              [yaxis]="chartOptions.yaxis!"
+              [title]="chartOptions.title!"
+              [colors]="chartOptions.colors!"
+              [fill]="chartOptions.fill!">
+            </apx-chart>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeMetricsModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
