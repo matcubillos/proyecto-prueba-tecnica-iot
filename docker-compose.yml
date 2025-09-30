@@ -1,0 +1,94 @@
+
+services:
+  db:
+    container_name: prueba-tecnica-iot-postgres
+    image: postgres:16.8-alpine
+    restart: unless-stopped
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    env_file:
+      - .env.development
+    ports:
+      - "5432:5432"
+    
+    networks:
+      - iot_network
+
+  api:
+    container_name: prueba-tecnica-iot-backend
+    
+    build:
+      context: ./prueba-tecnica-iot-backend
+      dockerfile: ./Dockerfile
+      target: development
+
+    volumes:
+      - ./prueba-tecnica-iot-backend/src:/var/api/src
+      - ./prueba-tecnica-iot-backend/.env.development:/var/api/.env.development
+      - ./prueba-tecnica-iot-backend/package.json:/var/api/package.json
+      - ./prueba-tecnica-iot-backend/package-lock.json:/var/api/package-lock.json
+      - ./seeds:/var/api/seeds
+    env_file:
+      - .env.development
+    environment:
+      NODE_ENV: development #dev
+    ports:
+      - "3000:3000" # puerto de nest
+
+    networks:
+      - iot_network
+
+    depends_on:
+      - db
+
+  frontend:
+      container_name: prueba-tecnica-iot-frontend
+      build:
+        context: ./prueba-tecnica-iot-frontend
+        dockerfile: Dockerfile
+      ports:
+        - "4200:4200"
+      volumes:
+        - ./prueba-tecnica-iot-frontend:/app
+        - /app/node_modules
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+      networks:
+        - iot_network
+
+  n8n:
+    container_name: prueba-tecnica-iot-n8n
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    environment:
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      - N8N_AUTH_DISABLED=true
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_DISABLE_UI_LOGIN=true  # Deshabilitar login y setup
+      - N8N_EXECUTIONS_MODE=main
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - WEBHOOK_URL=http://n8n:5678/
+      - N8N_WORKFLOW_STORAGE_TYPE=filesystem
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - DB_SQLITE_POOL_SIZE=10
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+    ports:
+      - "5678:5678"
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+      - ./n8n_workflows:/home/node/.n8n/workflows
+    depends_on:
+      - db
+      - api
+    networks:
+      - iot_network
+
+
+
+networks:
+  iot_network:
+    driver: bridge

@@ -1,0 +1,97 @@
+{
+  "name": "My workflow - Gen Logs",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:3000/device-logs",
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={\n  \"DEVICE_ID\": {{ $json.DEVICE_ID }},\n  \"LOG_MESSAGE\": {{ JSON.stringify($json.LOG_MESSAGE) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        -96
+      ],
+      "id": "85148ae2-02c1-44b3-b204-57c9f5541011",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        -96
+      ],
+      "id": "886381d1-6e90-40fc-9801-c80c49c71a4e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import random\n\n# Dispositivos reales de la base de datos\ndevices = [\n    {\"id\": 1, \"name\": \"Camera_Entrance_01\", \"type\": \"IP Camera\"},\n    {\"id\": 2, \"name\": \"PLC_FactoryLine_A\", \"type\": \"PLC\"},\n    {\"id\": 3, \"name\": \"TempSensor_Room1\", \"type\": \"Temperature Sensor\"},\n    {\"id\": 4, \"name\": \"LED_Beacon_Exit\", \"type\": \"LED Beacon\"},\n    {\"id\": 5, \"name\": \"Valve_Pipe_001\", \"type\": \"Motorized Valve\"},\n    {\"id\": 6, \"name\": \"Camera_Lobby_02\", \"type\": \"IP Camera\"},\n    {\"id\": 7, \"name\": \"PLC_Conveyor_B\", \"type\": \"PLC\"},\n    {\"id\": 8, \"name\": \"TempSensor_Warehouse\", \"type\": \"Temperature Sensor\"},\n    {\"id\": 9, \"name\": \"LED_Beacon_Gate\", \"type\": \"LED Beacon\"},\n    {\"id\": 10, \"name\": \"Valve_Pipe_002\", \"type\": \"Motorized Valve\"}\n]\n\n# IPs de ejemplo\nips = [\"192.168.1.\" + str(i) for i in range(100, 115)]\nports = [8080, 502, 1883, 5000, 8000]\n\n# Protocolos por tipo de dispositivo\nprotocols = {\n    \"IP Camera\": [\"RTSP\", \"HTTP\", \"ONVIF\"],\n    \"PLC\": [\"Modbus TCP\", \"Profinet\", \"EtherNet/IP\"],\n    \"Temperature Sensor\": [\"MQTT\", \"HTTP\", \"CoAP\"],\n    \"LED Beacon\": [\"HTTP\", \"WebSocket\", \"MQTT\"],\n    \"Motorized Valve\": [\"Modbus TCP\", \"BACnet\", \"HTTP\"]\n}\n\n# Interfaces de red\ninterfaces = [\"eth0\", \"wlan0\", \"eth1\", \"usb0\"]\n\n# Tipos de eventos\nevent_types = [\n    \"connection\",      # 40%\n    \"disconnection\",   # 20%\n    \"authentication\",  # 15%\n    \"network_change\",  # 10%\n    \"restart\",         # 10%\n    \"error\"           # 5%\n]\n\nweights = [40, 20, 15, 10, 10, 5]\n\ndef generate_session_id():\n    return ''.join(random.choices('abcdef0123456789', k=8))\n\ndef generate_log_message(device, event_type):\n    ip = random.choice(ips)\n    port = random.choice(ports)\n    protocol = random.choice(protocols.get(device[\"type\"], [\"HTTP\"]))\n    interface = random.choice(interfaces)\n    session_id = generate_session_id()\n    \n    if event_type == \"connection\":\n        templates = [\n            f\"[INFO] Device {device['name']} connected successfully from {ip}:{port} - Session ID: {session_id}\",\n            f\"[INFO] Device {device['name']} established connection via {protocol} - IP: {ip}\",\n            f\"[INFO] Device {device['name']} online - Interface: {interface} - IP: {ip}\",\n            f\"[INFO] Device {device['name']} connected to network {ip.rsplit('.', 1)[0]}.0/24 via {interface}\"\n        ]\n    \n    elif event_type == \"disconnection\":\n        reason = random.choice([\"timeout\", \"network unreachable\", \"user request\", \"power loss\"])\n        templates = [\n            f\"[WARNING] Device {device['name']} disconnected - Reason: {reason}\",\n            f\"[WARNING] Device {device['name']} connection lost - Last IP: {ip}\",\n            f\"[INFO] Device {device['name']} disconnected gracefully - Session ID: {session_id}\",\n            f\"[WARNING] Device {device['name']} went offline - Interface: {interface} down\"\n        ]\n    \n    elif event_type == \"authentication\":\n        success = random.choice([True, True, True, False])  # 75% success\n        if success:\n            templates = [\n                f\"[INFO] Device {device['name']} authenticated successfully - User: admin - IP: {ip}\",\n                f\"[INFO] Device {device['name']} login successful via {protocol} - Session: {session_id}\",\n                f\"[INFO] Device {device['name']} certificate validated - CN: iot-device-{device['id']}\"\n            ]\n        else:\n            templates = [\n                f\"[ERROR] Device {device['name']} authentication failed - Invalid credentials from {ip}\",\n                f\"[ERROR] Device {device['name']} login denied - Reason: invalid token\",\n                f\"[WARNING] Device {device['name']} authentication attempt blocked - IP: {ip}\"\n            ]\n    \n    elif event_type == \"network_change\":\n        old_ip = random.choice(ips)\n        new_ip = random.choice(ips)\n        templates = [\n            f\"[INFO] Device {device['name']} IP changed from {old_ip} to {new_ip}\",\n            f\"[INFO] Device {device['name']} switched interface from eth0 to {interface}\",\n            f\"[INFO] Device {device['name']} network reconfigured - New gateway: {ip.rsplit('.', 1)[0]}.1\",\n            f\"[WARNING] Device {device['name']} DHCP lease renewed - IP: {new_ip}\"\n        ]\n    \n    elif event_type == \"restart\":\n        uptime_days = random.randint(0, 30)\n        uptime_hours = random.randint(0, 23)\n        firmware = f\"v{random.randint(1,3)}.{random.randint(0,9)}.{random.randint(0,9)}\"\n        templates = [\n            f\"[INFO] Device {device['name']} restarted - Uptime: {uptime_days}d {uptime_hours}h - Firmware: {firmware}\",\n            f\"[INFO] Device {device['name']} boot complete - Interface: {interface} - IP: {ip}\",\n            f\"[WARNING] Device {device['name']} unexpected reboot detected - Last uptime: {uptime_days}d\",\n            f\"[INFO] Device {device['name']} firmware update completed - Version: {firmware}\"\n        ]\n    \n    else:  # error\n        error_code = random.randint(1000, 9999)\n        templates = [\n            f\"[ERROR] Device {device['name']} connection timeout - Host: {ip} unreachable\",\n            f\"[ERROR] Device {device['name']} protocol error - {protocol} handshake failed\",\n            f\"[ERROR] Device {device['name']} hardware fault detected - Error code: {error_code}\",\n            f\"[WARNING] Device {device['name']} high latency detected - RTT: {random.randint(500, 2000)}ms\"\n        ]\n    \n    return random.choice(templates)\n\n# Seleccionar dispositivo y tipo de evento\nselected_device = random.choice(devices)\nevent_type = random.choices(event_types, weights=weights, k=1)[0]\n\nresult = {\n    \"DEVICE_ID\": selected_device[\"id\"],\n    \"LOG_MESSAGE\": generate_log_message(selected_device, event_type)\n}\n\nreturn result"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -96
+      ],
+      "id": "612cd7be-84b1-4613-9f93-7625b2795b30",
+      "name": "Code in Python (Beta)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a22579cf-0542-4c4a-b7a2-aab79d2d7f11",
+  "meta": {
+    "instanceId": "6243ac5b356f0464492fe9b78d282412d2f577732f6ac8009cdcf442d50aed31"
+  },
+  "id": "3E1rTO5GLaPvnrXY",
+  "tags": []
+}

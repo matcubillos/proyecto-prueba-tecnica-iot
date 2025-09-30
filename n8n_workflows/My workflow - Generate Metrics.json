@@ -1,0 +1,113 @@
+{
+  "name": "My workflow - Generate Metrics",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -176
+      ],
+      "id": "4f44bb1b-ed0b-4104-9461-4b0b7b175a2a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:3000/device-metrics",
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={\n  \"DEVICE_ID\": {{ $json.DEVICE_ID }},\n  \"METRICS\": {{ JSON.stringify($json.METRICS) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        -304
+      ],
+      "id": "5d844538-120a-4d97-9f3e-bd46f5f33925",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 4
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        -304
+      ],
+      "id": "40afb313-4842-4656-a6c9-39c45a68fa07",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import random\n\n# Dispositivos reales de la base de datos\ndevices = [\n    {\"id\": 1, \"type\": \"IP Camera\"},\n    {\"id\": 2, \"type\": \"PLC\"},\n    {\"id\": 3, \"type\": \"Temperature Sensor\"},\n    {\"id\": 4, \"type\": \"LED Beacon\"},\n    {\"id\": 5, \"type\": \"Motorized Valve\"},\n    {\"id\": 6, \"type\": \"IP Camera\"},\n    {\"id\": 7, \"type\": \"PLC\"},\n    {\"id\": 8, \"type\": \"Temperature Sensor\"},\n    {\"id\": 9, \"type\": \"LED Beacon\"},\n    {\"id\": 10, \"type\": \"Motorized Valve\"}\n]\n\ndef generate_ip_camera_metrics():\n    return {\n        \"status\": random.choice([\"Online\", \"Offline\", \"Warning\"]),\n        \"resolution\": \"1080p\",\n        \"fps\": random.randint(15, 45),\n        \"storage_used_gb\": random.randint(100, 1000),\n        \"bandwidth_mbps\": round(random.uniform(5, 15), 1)\n    }\n\ndef generate_plc_metrics():\n    return {\n        \"status\": random.choice([\"Online\", \"Offline\", \"Warning\"]),\n        \"cpu_usage\": random.randint(10, 90),\n        \"memory_usage\": random.randint(20, 90),\n        \"io_modules_active\": random.randint(8, 24),\n        \"cycle_time_ms\": random.randint(10, 60)\n    }\n\ndef generate_temperature_sensor_metrics():\n    return {\n        \"status\": random.choice([\"Online\", \"Offline\", \"Warning\"]),\n        \"temperature_c\": round(random.uniform(15, 55), 1),\n        \"humidity\": random.randint(30, 90),\n        \"battery\": random.randint(20, 100)\n    }\n\ndef generate_led_beacon_metrics():\n    return {\n        \"status\": random.choice([\"Online\", \"Offline\", \"Warning\"]),\n        \"brightness\": random.randint(20, 100),\n        \"color\": random.choice([\"Red\", \"Green\", \"Blue\", \"Yellow\", \"Orange\"]),\n        \"flash_rate_hz\": random.randint(1, 6)\n    }\n\ndef generate_motorized_valve_metrics():\n    return {\n        \"status\": random.choice([\"Online\", \"Offline\", \"Warning\"]),\n        \"position\": random.choice([\"Open\", \"Closed\", \"Partial\"]),\n        \"pressure_bar\": round(random.uniform(1, 10), 1),\n        \"flow_rate_lpm\": round(random.uniform(10, 60), 1)\n    }\n\ndef generate_metrics(device_type):\n    metrics_generators = {\n        \"IP Camera\": generate_ip_camera_metrics,\n        \"PLC\": generate_plc_metrics,\n        \"Temperature Sensor\": generate_temperature_sensor_metrics,\n        \"LED Beacon\": generate_led_beacon_metrics,\n        \"Motorized Valve\": generate_motorized_valve_metrics\n    }\n    \n    return metrics_generators[device_type]()\n\n# Seleccionar dispositivo aleatorio y generar métricas\nselected_device = random.choice(devices)\n\nresult = {\n    \"DEVICE_ID\": selected_device[\"id\"],\n    \"METRICS\": generate_metrics(selected_device[\"type\"])\n}\n\nreturn result"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        -304
+      ],
+      "id": "2818f22c-fe17-42a4-a6b6-d56823a7cc12",
+      "name": "Code in Python (Beta)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "02840d7a-d680-4a4f-b23b-b4a0e359a525",
+  "meta": {
+    "instanceId": "6243ac5b356f0464492fe9b78d282412d2f577732f6ac8009cdcf442d50aed31"
+  },
+  "id": "FR0d2tq7Emmr5ydf",
+  "tags": []
+}

@@ -1,0 +1,123 @@
+[
+    {
+      "DEVICE_NAME": "Camera_Entrance_01",
+      "DEVICE_TYPE": "IP Camera",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "Camera_Lobby_02",
+      "DEVICE_TYPE": "IP Camera",
+      "DEVICE_STATE": "Offline",
+      "DEVICE_IS_ACTIVE": false
+    },
+    {
+      "DEVICE_NAME": "Camera_Warehouse_03",
+      "DEVICE_TYPE": "IP Camera",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "Camera_Parking_04",
+      "DEVICE_TYPE": "IP Camera",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "PLC_FactoryLine_A",
+      "DEVICE_TYPE": "PLC",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "PLC_Conveyor_B",
+      "DEVICE_TYPE": "PLC",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "PLC_Packaging_C",
+      "DEVICE_TYPE": "PLC",
+      "DEVICE_STATE": "Offline",
+      "DEVICE_IS_ACTIVE": false
+    },
+    {
+      "DEVICE_NAME": "PLC_Assembly_D",
+      "DEVICE_TYPE": "PLC",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "TempSensor_Room1",
+      "DEVICE_TYPE": "Temperature Sensor",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "TempSensor_Warehouse",
+      "DEVICE_TYPE": "Temperature Sensor",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "TempSensor_Freezer_01",
+      "DEVICE_TYPE": "Temperature Sensor",
+      "DEVICE_STATE": "Offline",
+      "DEVICE_IS_ACTIVE": false
+    },
+    {
+      "DEVICE_NAME": "TempSensor_Lab_02",
+      "DEVICE_TYPE": "Temperature Sensor",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "LED_Beacon_Exit",
+      "DEVICE_TYPE": "LED Beacon",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "LED_Beacon_Gate",
+      "DEVICE_TYPE": "LED Beacon",
+      "DEVICE_STATE": "Offline",
+      "DEVICE_IS_ACTIVE": false
+    },
+    {
+      "DEVICE_NAME": "LED_Beacon_Lobby",
+      "DEVICE_TYPE": "LED Beacon",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "LED_Beacon_Rooftop",
+      "DEVICE_TYPE": "LED Beacon",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "Valve_Pipe_001",
+      "DEVICE_TYPE": "Motorized Valve",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "Valve_Pipe_002",
+      "DEVICE_TYPE": "Motorized Valve",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    },
+    {
+      "DEVICE_NAME": "Valve_PumpStation_03",
+      "DEVICE_TYPE": "Motorized Valve",
+      "DEVICE_STATE": "Offline",
+      "DEVICE_IS_ACTIVE": false
+    },
+    {
+      "DEVICE_NAME": "Valve_MainLine_04",
+      "DEVICE_TYPE": "Motorized Valve",
+      "DEVICE_STATE": "Online",
+      "DEVICE_IS_ACTIVE": true
+    }
+  ]
+  

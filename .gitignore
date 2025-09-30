@@ -1,0 +1,19 @@
+# Docker
+db_data/
+n8n_data/
+node_modules/
+*.log
+
+# Archivos de compilación
+prueba-tecnica-iot-backend/dist/
+prueba-tecnica-iot-frontend/dist/
+prueba-tecnica-iot-frontend/node_modules/
+
+# Archivos sensibles
+.env
+*.env.local
+*.env.*.local
+
+db_data/
+n8n_data/
+
