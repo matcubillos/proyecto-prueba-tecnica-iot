@@ -79,7 +79,7 @@ services:
     ports:
       - "5678:5678"
     volumes:
-      - ./n8n_data:/home/node/.n8n
+      - n8n_data:/home/node/.n8n
       - ./n8n_workflows:/home/node/.n8n/workflows
     depends_on:
       - db
@@ -87,8 +87,9 @@ services:
     networks:
       - iot_network
 
-
-
 networks:
   iot_network:
     driver: bridge
+
+volumes:
+  n8n_data:
